@@ -146,35 +146,174 @@ footer{background:#080a0c;color:#fff;display:grid;grid-template-columns:1fr 1.3f
 <nav class="mobile-nav"><button onclick="scrollTo(0,0)"><b>⌂</b>Home</button><button onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})"><b>◇</b>Shop</button><button onclick="openCart()"><b>▢</b>Bag</button><button><b>♡</b>Favorites</button><button><b>♙</b>Profile</button></nav>
 
 <script>
-var products=[
-{id:1,name:"Ribbed Maxi Dress",price:1890,a:"Women",img:"https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=85"},
-{id:2,name:"Linen Blend Set",price:2450,a:"Women",img:"https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?auto=format&fit=crop&w=700&q=85"},
-{id:3,name:"One Shoulder Top",price:1290,a:"Women",img:"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=85"},
-{id:4,name:"Wide Leg Pants",price:1590,a:"Women",img:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=700&q=85"},
-{id:5,name:"Oversized Blazer",price:2350,a:"Men",img:"https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=700&q=85"},
-{id:6,name:"Essential Tee",price:950,a:"Men",img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=85"}
+const products = [
+  {id:1,name:"Ribbed Maxi Dress",price:1890,a:"Women",img:"https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=85"},
+  {id:2,name:"Linen Blend Set",price:2450,a:"Women",img:"https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?auto=format&fit=crop&w=700&q=85"},
+  {id:3,name:"One Shoulder Top",price:1290,a:"Women",img:"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=85"},
+  {id:4,name:"Wide Leg Pants",price:1590,a:"Women",img:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=700&q=85"},
+  {id:5,name:"Oversized Blazer",price:2350,a:"Men",img:"https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=700&q=85"},
+  {id:6,name:"Essential Tee",price:950,a:"Men",img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=85"}
 ];
-var cardSizes={},cart=[],active=null,qsize="M";
-function money(n){return n.toLocaleString("en-EG")+" EGP"}
-function renderProducts(){var h="";products.forEach(function(p){h+='<article class="product"><div class="pm" onclick="openQuick('+p.id+')"><img src="'+p.img+'" alt="'+p.name+'"><button class="heart" onclick="event.stopPropagation();this.textContent=this.textContent===\\'♥\\'?\\'♡\\':\\'♥\\'">♡</button></div><div class="pname">'+p.name+'</div><div class="price">'+money(p.price)+'</div><div class="swatches"><i></i><i></i><i></i></div><div class="sizes">';["XS","S","M","L"].forEach(function(s){h+='<button class="'+(cardSizes[p.id]===s?'active':'')+'" onclick="pickSize('+p.id+',\\''+s+'\\',this)">'+s+'</button>'});h+='</div><button class="add-card" onclick="quickAdd('+p.id+')">ADD TO BAG</button></article>'});document.getElementById("productGrid").innerHTML=h}
-function pickSize(id,s,el){cardSizes[id]=s;Array.from(el.parentNode.children).forEach(function(x){x.classList.remove("active")});el.classList.add("active")}
-function quickAdd(id){addToCart(id,cardSizes[id]||"M")}
-function addToCart(id,size){var p=products.find(function(x){return x.id===id});var f=cart.find(function(x){return x.id===id&&x.size===size});if(f)f.qty++;else cart.push({id:p.id,name:p.name,price:p.price,a:p.a,img:p.img,size:size,qty:1});updateCart();showToast(p,size)}
-function updateCart(){var total=cart.reduce(function(a,b){return a+b.price*b.qty},0);document.getElementById("bagNum").textContent=cart.reduce(function(a,b){return a+b.qty},0);var h="";cart.forEach(function(x,i){h+='<div class="ci"><img src="'+x.img+'"><div><b>'+x.name+'</b><br><small>Size: '+x.size+'</small><div class="qty"><button onclick="qty('+i+',-1)">−</button><span>'+x.qty+'</span><button onclick="qty('+i+',1)">+</button></div></div><button class="x" onclick="removeItem('+i+')">×</button></div>'});document.getElementById("cartItems").innerHTML=h||'<p style="font-size:10px;color:#aaa;padding:25px 0">Your bag is empty.</p>';document.getElementById("subtotal").textContent=money(total);document.getElementById("shipbar").style.width=Math.min(100,total/2500*100)+"%";document.getElementById("shiptxt").textContent=total>=2500?"Free delivery unlocked ✓":"You're "+money(Math.max(0,2500-total))+" away from free delivery"}
-function qty(i,d){cart[i].qty+=d;if(cart[i].qty<=0)cart.splice(i,1);updateCart()}function removeItem(i){cart.splice(i,1);updateCart()}
-function openCart(){updateCart();document.getElementById("cart").classList.add("open")}function closeCart(){document.getElementById("cart").classList.remove("open")}
-function openQuick(id){active=products.find(function(x){return x.id===id});qsize="M";document.getElementById("qvImg").src=active.img;document.getElementById("qvAudience").textContent=active.a+" / NEW COLLECTION";document.getElementById("qvName").textContent=active.name;document.getElementById("qvPrice").textContent=money(active.price);renderQSizes();document.getElementById("quickview").classList.add("open")}
-function renderQSizes(){var h="";["XS","S","M","L"].forEach(function(s){h+='<button class="'+(qsize===s?'active':'')+'" onclick="qsize=\\''+s+'\\';renderQSizes()">'+s+'</button>'});document.getElementById("qvSizes").innerHTML=h}
-function closeQuick(){document.getElementById("quickview").classList.remove("open")}function qvAdd(){addToCart(active.id,qsize);closeQuick()}function qvBuy(){addToCart(active.id,qsize);hideToast();closeQuick();openCheckout()}
-function showToast(p,s){document.getElementById("toastText").textContent=p.name+" · Size "+s+" · "+money(p.price);document.getElementById("toast").classList.add("open");clearTimeout(window.toastTimer);window.toastTimer=setTimeout(hideToast,3300)}function hideToast(){document.getElementById("toast").classList.remove("open")}
-function openCheckout(){if(!cart.length){openCart();return}closeCart();var h="";cart.forEach(function(x){h+='<div class="sumrow"><img src="'+x.img+'"><div><b>'+x.name+'</b><br>Size '+x.size+' · Qty '+x.qty+'<br>'+money(x.price*x.qty)+'</div></div>'});document.getElementById("summaryItems").innerHTML=h;document.getElementById("summaryTotal").textContent=money(cart.reduce(function(a,b){return a+b.price*b.qty},0));document.getElementById("checkout").classList.add("open")}
-function closeCheckout(){document.getElementById("checkout").classList.remove("open")}
-function placeOrder(){var ids=["name","phone","area","address"];var bad=ids.some(function(id){return !document.getElementById(id).value.trim()});if(bad){document.getElementById("err").textContent="Please complete the required details.";return}document.getElementById("err").textContent="";document.getElementById("coForm").style.display="none";document.getElementById("coSummary").style.display="none";document.getElementById("success").classList.add("show")}
-function finishOrder(){cart=[];updateCart();closeCheckout();document.getElementById("coForm").style.display="block";document.getElementById("coSummary").style.display="block";document.getElementById("success").classList.remove("show")}
-function openSearch(){document.getElementById("search").classList.add("open");renderSearch();setTimeout(function(){document.getElementById("searchInput").focus()},80)}function closeSearch(){document.getElementById("search").classList.remove("open")}
-function renderSearch(){var q=(document.getElementById("searchInput").value||"").toLowerCase();var arr=products.filter(function(p){return !q||p.name.toLowerCase().includes(q)||p.a.toLowerCase().includes(q)}).slice(0,3);var h="";arr.forEach(function(p){h+='<button class="sresult" onclick="closeSearch();openQuick('+p.id+')"><img src="'+p.img+'"><span>'+p.name+' · '+money(p.price)+'</span></button>'});document.getElementById("searchResults").innerHTML=h}
-var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add("in")})},{threshold:.12});document.querySelectorAll(".reveal").forEach(function(x){io.observe(x)});
-window.addEventListener("scroll",function(){var m=document.documentElement.scrollHeight-innerHeight;document.getElementById("progress").style.width=(m?scrollY/m*100:0)+"%"});
-renderProducts();renderSearch();updateCart();
+
+let cardSizes = {};
+let cart = [];
+let active = null;
+let qsize = "M";
+const money = n => n.toLocaleString("en-EG") + " EGP";
+
+function renderProducts(){
+  const grid = document.getElementById("productGrid");
+  grid.innerHTML = products.map(p => {
+    const sizes = ["XS","S","M","L"].map(s =>
+      `<button class="${cardSizes[p.id]===s ? "active" : ""}" data-product="${p.id}" data-size="${s}">${s}</button>`
+    ).join("");
+    return `
+      <article class="product">
+        <div class="pm" data-open-product="${p.id}">
+          <img src="${p.img}" alt="${p.name}">
+          <button class="heart" aria-label="Favorite">♡</button>
+        </div>
+        <div class="pname">${p.name}</div>
+        <div class="price">${money(p.price)}</div>
+        <div class="swatches"><i></i><i></i><i></i></div>
+        <div class="sizes">${sizes}</div>
+        <button class="add-card" data-add-product="${p.id}">ADD TO BAG</button>
+      </article>`;
+  }).join("");
+
+  grid.querySelectorAll("[data-open-product]").forEach(el => el.addEventListener("click", e => {
+    if(e.target.classList.contains("heart")) return;
+    openQuick(Number(el.dataset.openProduct));
+  }));
+  grid.querySelectorAll(".heart").forEach(btn => btn.addEventListener("click", e => {
+    e.stopPropagation();
+    btn.textContent = btn.textContent === "♥" ? "♡" : "♥";
+  }));
+  grid.querySelectorAll(".sizes button").forEach(btn => btn.addEventListener("click", () => {
+    const id = Number(btn.dataset.product);
+    cardSizes[id] = btn.dataset.size;
+    btn.parentElement.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  }));
+  grid.querySelectorAll("[data-add-product]").forEach(btn => btn.addEventListener("click", () => {
+    const id = Number(btn.dataset.addProduct);
+    addToCart(id, cardSizes[id] || "M");
+  }));
+}
+
+function addToCart(id,size){
+  const p = products.find(x => x.id === id);
+  const found = cart.find(x => x.id === id && x.size === size);
+  if(found) found.qty += 1;
+  else cart.push({...p,size,qty:1});
+  updateCart();
+  showToast(p,size);
+}
+
+function updateCart(){
+  const total = cart.reduce((a,b) => a + b.price*b.qty, 0);
+  document.getElementById("bagNum").textContent = cart.reduce((a,b)=>a+b.qty,0);
+  document.getElementById("cartItems").innerHTML = cart.length ? cart.map((x,i)=>`
+    <div class="ci">
+      <img src="${x.img}" alt="${x.name}">
+      <div><b>${x.name}</b><br><small>Size: ${x.size}</small>
+        <div class="qty"><button data-dec="${i}">−</button><span>${x.qty}</span><button data-inc="${i}">+</button></div>
+      </div>
+      <button class="x" data-remove="${i}">×</button>
+    </div>`).join("") : '<p style="font-size:10px;color:#aaa;padding:25px 0">Your bag is empty.</p>';
+  document.getElementById("subtotal").textContent = money(total);
+  document.getElementById("shipbar").style.width = Math.min(100,total/2500*100) + "%";
+  document.getElementById("shiptxt").textContent = total >= 2500 ? "Free delivery unlocked ✓" : "You're " + money(Math.max(0,2500-total)) + " away from free delivery";
+
+  document.querySelectorAll("[data-dec]").forEach(b=>b.onclick=()=>changeQty(Number(b.dataset.dec),-1));
+  document.querySelectorAll("[data-inc]").forEach(b=>b.onclick=()=>changeQty(Number(b.dataset.inc),1));
+  document.querySelectorAll("[data-remove]").forEach(b=>b.onclick=()=>{cart.splice(Number(b.dataset.remove),1);updateCart();});
+}
+function changeQty(i,d){ cart[i].qty += d; if(cart[i].qty<=0) cart.splice(i,1); updateCart(); }
+function openCart(){ updateCart(); document.getElementById("cart").classList.add("open"); }
+function closeCart(){ document.getElementById("cart").classList.remove("open"); }
+
+function openQuick(id){
+  active = products.find(x => x.id===id);
+  qsize = "M";
+  document.getElementById("qvImg").src = active.img;
+  document.getElementById("qvAudience").textContent = active.a + " / NEW COLLECTION";
+  document.getElementById("qvName").textContent = active.name;
+  document.getElementById("qvPrice").textContent = money(active.price);
+  renderQSizes();
+  document.getElementById("quickview").classList.add("open");
+}
+function renderQSizes(){
+  const wrap = document.getElementById("qvSizes");
+  wrap.innerHTML = ["XS","S","M","L"].map(s=>`<button class="${qsize===s?"active":""}" data-qsize="${s}">${s}</button>`).join("");
+  wrap.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{qsize=btn.dataset.qsize;renderQSizes();});
+}
+function closeQuick(){ document.getElementById("quickview").classList.remove("open"); }
+function qvAdd(){ if(active){ addToCart(active.id,qsize); closeQuick(); } }
+function qvBuy(){ if(active){ addToCart(active.id,qsize); hideToast(); closeQuick(); openCheckout(); } }
+
+function showToast(p,s){
+  document.getElementById("toastText").textContent = p.name + " · Size " + s + " · " + money(p.price);
+  document.getElementById("toast").classList.add("open");
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(hideToast,3300);
+}
+function hideToast(){ document.getElementById("toast").classList.remove("open"); }
+
+function openCheckout(){
+  if(!cart.length){ openCart(); return; }
+  closeCart();
+  document.getElementById("summaryItems").innerHTML = cart.map(x=>`
+    <div class="sumrow"><img src="${x.img}" alt="${x.name}">
+      <div><b>${x.name}</b><br>Size ${x.size} · Qty ${x.qty}<br>${money(x.price*x.qty)}</div>
+    </div>`).join("");
+  document.getElementById("summaryTotal").textContent = money(cart.reduce((a,b)=>a+b.price*b.qty,0));
+  document.getElementById("checkout").classList.add("open");
+}
+function closeCheckout(){ document.getElementById("checkout").classList.remove("open"); }
+function placeOrder(){
+  const ids = ["name","phone","area","address"];
+  if(ids.some(id=>!document.getElementById(id).value.trim())){
+    document.getElementById("err").textContent = "Please complete the required details.";
+    return;
+  }
+  document.getElementById("err").textContent = "";
+  document.getElementById("coForm").style.display = "none";
+  document.getElementById("coSummary").style.display = "none";
+  document.getElementById("success").classList.add("show");
+}
+function finishOrder(){
+  cart=[]; updateCart(); closeCheckout();
+  document.getElementById("coForm").style.display = "block";
+  document.getElementById("coSummary").style.display = "block";
+  document.getElementById("success").classList.remove("show");
+}
+
+function openSearch(){
+  document.getElementById("search").classList.add("open");
+  renderSearch();
+  setTimeout(()=>document.getElementById("searchInput").focus(),80);
+}
+function closeSearch(){ document.getElementById("search").classList.remove("open"); }
+function renderSearch(){
+  const q = (document.getElementById("searchInput").value || "").toLowerCase();
+  const arr = products.filter(p=>!q || p.name.toLowerCase().includes(q) || p.a.toLowerCase().includes(q)).slice(0,3);
+  document.getElementById("searchResults").innerHTML = arr.map(p=>`
+    <button class="sresult" data-search-product="${p.id}">
+      <img src="${p.img}" alt="${p.name}"><span>${p.name} · ${money(p.price)}</span>
+    </button>`).join("");
+  document.querySelectorAll("[data-search-product]").forEach(btn=>btn.onclick=()=>{closeSearch();openQuick(Number(btn.dataset.searchProduct));});
+}
+
+const io = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("in"); }), {threshold:.08});
+document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+window.addEventListener("scroll",()=>{
+  const m = document.documentElement.scrollHeight - innerHeight;
+  document.getElementById("progress").style.width = (m ? scrollY/m*100 : 0) + "%";
+});
+
+renderProducts();
+renderSearch();
+updateCart();
 </script>
 </body></html>
