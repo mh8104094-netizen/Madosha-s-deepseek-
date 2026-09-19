@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -u
 
-echo "[XMIND] starting sovereign app on port ${PORT:-80}"
-python -m uvicorn sovereign:app --host 0.0.0.0 --port "${PORT:-80}" &
+echo "[XMIND] starting conversation core v0.4 on port ${PORT:-80}"
+python -m uvicorn sovereign_v2:app --host 0.0.0.0 --port "${PORT:-80}" &
 APP_PID=$!
 
 echo "[XMIND] starting cortex compatibility proxy on 127.0.0.1:11434"
