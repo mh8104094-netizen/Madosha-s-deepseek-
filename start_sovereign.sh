@@ -17,8 +17,12 @@ echo "[CORTEX] starting inference self-test in background"
 python probe_cortex.py &
 PROBE_PID=$!
 
+echo "[XMIND] starting conversation self-test in background"
+python probe_conversation.py &
+CONVO_PROBE_PID=$!
+
 cleanup() {
-  kill "$PROXY_PID" "$LLAMA_PID" "$PROBE_PID" 2>/dev/null || true
+  kill "$PROXY_PID" "$LLAMA_PID" "$PROBE_PID" "$CONVO_PROBE_PID" 2>/dev/null || true
 }
 trap cleanup EXIT INT TERM
 
