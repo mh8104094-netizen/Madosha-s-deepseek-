@@ -1,7 +1,8 @@
-# X-MIND v0.1 — Railway Demo
+# X-MIND v0.1 Railway Demo
 
-This branch is dedicated to the X-MIND cognitive OS demo. Railpack installs the Python dependencies, `main.py` extracts the packaged X-MIND source, and the app starts with Uvicorn.
+Direct text-source deployment. No archive extraction is required.
 
-- `/` — 3D X-MIND interface
-- `/health` — health check
-- `/docs` — FastAPI API explorer
+- `/` 3D cognitive interface
+- `/health` service health
+- `/docs` FastAPI explorer
+- Safe Mock Mode by default
