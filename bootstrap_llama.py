@@ -57,7 +57,7 @@ def download(url: str, dest: pathlib.Path, label: str) -> None:
         return
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_suffix(dest.suffix + ".part")
-    req = urllib.request.Request(url, headers={"User-Agent": "X-MIND/0.4"})
+    req = urllib.request.Request(url, headers={"User-Agent": "X-MIND/0.5"})
     log(f"downloading {label}...")
     with urllib.request.urlopen(req, timeout=60) as r, open(tmp, "wb") as f:
         total = int(r.headers.get("Content-Length") or 0)
@@ -80,9 +80,7 @@ def download(url: str, dest: pathlib.Path, label: str) -> None:
 
 
 def find_server() -> pathlib.Path:
-    candidates = list(RUNTIME_DIR.rglob("llama-server"))
-    if not candidates:
-        candidates = list(RUNTIME_DIR.rglob("llama-server*"))
+    candidates = list(RUNTIME_DIR.rglob("llama-server")) or list(RUNTIME_DIR.rglob("llama-server*"))
     for p in candidates:
         if p.is_file():
             p.chmod(p.stat().st_mode | 0o111)
@@ -120,6 +118,9 @@ def main() -> None:
         "--port", PORT,
         "-c", CTX,
         "-t", THREADS,
+        "-np", "1",
+        "--cache-ram", "0",
+        "--no-warmup",
         "--jinja",
         "--reasoning-budget", "0",
     ]
