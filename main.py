@@ -15,5 +15,7 @@ if not PACKAGE.exists():
     with zipfile.ZipFile(ARCHIVE) as zf:
         zf.extractall(ROOT)
 
-port = os.environ.get("PORT", "8000")
+# Existing Railway public domain targets container port 80.
+# Keep this fixed so the old VELA URL now serves X-MIND directly.
+port = "80"
 os.execvp(sys.executable, [sys.executable, "-m", "uvicorn", "xmind.api:app", "--host", "0.0.0.0", "--port", port])
