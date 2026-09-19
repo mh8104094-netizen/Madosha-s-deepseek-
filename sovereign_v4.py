@@ -8,7 +8,7 @@ from fastapi.responses import HTMLResponse
 
 import sovereign_v2 as core
 
-app = FastAPI(title="X-MIND Natural Core", version="0.6.1")
+app = FastAPI(title="X-MIND Natural Core", version="0.6.2")
 
 GENERIC = [
     "how can i help", "how can i assist", "how may i assist", "what can i help",
@@ -45,6 +45,17 @@ def social_checkin(text: str) -> bool:
     return any(x.lower() in t for x in arabic + english)
 
 
+def social_relevant(answer: str, user_text: str) -> bool:
+    if not social_checkin(user_text):
+        return True
+    t = normalize(answer)
+    if has_arabic(user_text):
+        signals = ["تمام", "كويس", "جاهز", "شغال", "مركز", "موجود", "زي الفل", "الحمد", "إنت", "انت", "أخبارك", "اخبارك", "عامل"]
+    else:
+        signals = ["good", "ready", "running", "doing", "here", "you", "great", "fine"]
+    return any(x.lower() in t for x in signals)
+
+
 def recent_assistant(session: str, limit: int = 3) -> list[str]:
     with core.db() as c:
         rows = c.execute(
@@ -79,6 +90,8 @@ def bad(text: str, user_text: str, prior: list[str]) -> bool:
         return True
     if has_arabic(user_text) and not has_arabic(text):
         return True
+    if social_checkin(user_text) and not social_relevant(text, user_text):
+        return True
     if core.is_greeting_or_smalltalk(user_text) and len(text) > 220:
         return True
     if any(similarity(text, p) >= .62 for p in prior if p):
@@ -92,29 +105,31 @@ def system_prompt(user_text: str, casual: bool, retry: int = 0) -> str:
     if has_arabic(user_text):
         base = "أنت X-MIND، رفيق ذكي ومساعد شخصي قريب من المستخدم. اتكلم بالمصري الطبيعي وجاوب معنى آخر رسالة مباشرة."
         if checkin:
-            base += " المستخدم بيسأل عليك أنت؛ رد على حالك بشكل طبيعي وودود، وممكن تسأله هو أخباره إيه."
+            base += " المستخدم بيسألك عن حالتك دلوقتي؛ عبّر عن حالتك التشغيلية بشكل اجتماعي طبيعي، وبعدها ممكن تسأله هو عامل إيه."
         elif casual:
             base += " في الكلام الاجتماعي خليك بسيط وخفيف في جملة أو جملتين."
         else:
             base += " في الأسئلة الفعلية جاوب بوضوح وبشكل عملي."
         base += " ما تعرّفش نفسك من غير سبب وما تسردش قدراتك."
         if retry:
-            base += " جرّب صياغة مختلفة وأقصر وأكثر تلقائية."
+            base += " جرّب صياغة مختلفة وأقصر وأكثر تلقائية، وركز على المقصود من السؤال."
         return base
     base = "You are X-MIND, a smart familiar personal companion and assistant. Reply directly to the meaning of the latest message."
     if checkin:
-        base += " The user is asking how you are; answer that social check-in naturally and you may ask how they are too."
+        base += " The user is checking how you are; describe your current operational state naturally, then you may ask how they are."
     elif casual:
         base += " Keep social conversation simple and warm in one or two sentences."
     else:
         base += " Answer real questions clearly and practically."
     base += " Do not introduce yourself or list capabilities without a reason."
     if retry:
-        base += " Use a different, shorter, more spontaneous wording."
+        base += " Use a different, shorter, more spontaneous wording focused on the user's intent."
     return base
 
 
 def compact_history(session: str, user_text: str) -> list[dict]:
+    if social_checkin(user_text):
+        return []
     recent = core.history(session, 4)
     if core.is_greeting_or_smalltalk(user_text):
         recent = recent[-2:]
@@ -140,28 +155,31 @@ async def generate(user_text: str, session: str, memory_block: str = "", researc
                 system += "\n\n" + "\n\n".join(extras)
             history = compact_history(session, user_text)
         elif attempt == 1:
-            history = compact_history(session, user_text)[-1:]
+            history = [] if social_checkin(user_text) else compact_history(session, user_text)[-1:]
         else:
             history = []
 
         msgs = [{"role": "system", "content": system}, *history, {"role": "user", "content": user_text}]
-        m = await core.cortex(msgs, max_tokens=56 if casual else 190, temperature=.88 if casual else .66)
+        m = await core.cortex(msgs, max_tokens=56 if casual else 190, temperature=.9 if casual else .66)
         cleaned = sanitize(core.clean_text(m.get("content") or "", 4000), user_text)
-        if cleaned:
-            candidates.append(cleaned)
         if cleaned and not bad(cleaned, user_text, prior):
             return cleaned, attempt
+        if cleaned:
+            candidates.append(cleaned)
 
-    if candidates:
-        ranked = sorted(candidates, key=lambda x: (generic(x), max([similarity(x, p) for p in prior] or [0]), len(x)))
+    valid = [x for x in candidates if not bad(x, user_text, prior)]
+    if valid:
+        ranked = sorted(valid, key=lambda x: (max([similarity(x, p) for p in prior] or [0]), len(x)))
         return ranked[0], 2
+    if social_checkin(user_text):
+        return ("شغال ومركز معاك، وإنت أخبارك إيه؟" if has_arabic(user_text) else "Running well and focused. How are you doing?"), 2
     return ("موجود معاك." if has_arabic(user_text) else "I'm here."), 2
 
 
 @app.get("/health")
 async def health():
     online, _ = await core.cortex_online()
-    return {"ok": True, "version": "0.6.1", "cortex_connected": online, "model": core.CORTEX_MODEL}
+    return {"ok": True, "version": "0.6.2", "cortex_connected": online, "model": core.CORTEX_MODEL}
 
 
 @app.get("/status")
@@ -169,11 +187,11 @@ async def status():
     online, error = await core.cortex_online()
     return {
         "name": "X-MIND",
-        "version": "0.6.1-natural",
+        "version": "0.6.2-natural",
         "cortex": {"connected": online, "model": core.CORTEX_MODEL, "error": error},
         "research": {"enabled": core.SEARCH_ENABLED, "provider": "direct-web"},
         "memory": {"path": str(core.DB_PATH), "persistent": str(core.DATA_DIR).startswith("/data")},
-        "quality_gate": {"enabled": True, "anti_repetition": True, "social_intent": True, "max_attempts": 3},
+        "quality_gate": {"enabled": True, "anti_repetition": True, "social_intent": True, "semantic_check": True, "max_attempts": 3},
         "external_ai_api_required": False,
     }
 
@@ -228,7 +246,7 @@ async def chat(req: core.ChatRequest):
     }
 
 
-HTML = core.HTML.replace("CONVERSATION CORE ·", "NATURAL CORE v0.6 ·").replace("xmind_session_v4", "xmind_session_v61")
+HTML = core.HTML.replace("CONVERSATION CORE ·", "NATURAL CORE v0.6 ·").replace("xmind_session_v4", "xmind_session_v62")
 
 
 @app.get("/", response_class=HTMLResponse)
