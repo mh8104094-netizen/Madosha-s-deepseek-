@@ -13,8 +13,12 @@ echo "[CORTEX] starting lightweight llama.cpp bootstrap in background"
 python bootstrap_llama.py &
 LLAMA_PID=$!
 
+echo "[CORTEX] starting inference self-test in background"
+python probe_cortex.py &
+PROBE_PID=$!
+
 cleanup() {
-  kill "$PROXY_PID" "$LLAMA_PID" 2>/dev/null || true
+  kill "$PROXY_PID" "$LLAMA_PID" "$PROBE_PID" 2>/dev/null || true
 }
 trap cleanup EXIT INT TERM
 
