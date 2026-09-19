@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import json
 import os
 from collections import defaultdict
 
 import httpx
 from fastapi import FastAPI, HTTPException, Request
 
-app = FastAPI(title="X-MIND Local Cortex Proxy", version="0.2")
+app = FastAPI(title="X-MIND Local Cortex Proxy", version="0.3")
 TARGET = os.getenv("XMIND_LLAMA_INTERNAL_URL", "http://127.0.0.1:11435").rstrip("/")
 MODEL_NAME = os.getenv("XMIND_CORTEX_MODEL", "qwen3-0.6b-local")
 MAX_PREDICT = int(os.getenv("XMIND_LOCAL_MAX_PREDICT", "384"))
@@ -42,12 +41,7 @@ def normalize_messages(messages: list[dict]) -> list[dict]:
             name = msg.get("tool_name") or msg.get("name") or "tool"
             ids = last_call_ids.get(name) or []
             call_id = msg.get("tool_call_id") or (ids.pop(0) if ids else f"call_tool_{seq}")
-            out.append({
-                "role": "tool",
-                "name": name,
-                "tool_call_id": call_id,
-                "content": msg.get("content", ""),
-            })
+            out.append({"role": "tool", "name": name, "tool_call_id": call_id, "content": msg.get("content", "")})
             seq += 1
             continue
         msg.pop("tool_name", None)
@@ -86,9 +80,12 @@ async def chat(req: Request):
         "model": MODEL_NAME,
         "messages": messages,
         "stream": False,
-        "temperature": float(options.get("temperature", 0.55)),
+        "temperature": float(options.get("temperature", 0.62)),
         "top_p": float(options.get("top_p", 0.9)),
         "max_tokens": max_tokens,
+        "repeat_penalty": float(options.get("repeat_penalty", 1.15)),
+        "frequency_penalty": float(options.get("frequency_penalty", 0.15)),
+        "presence_penalty": float(options.get("presence_penalty", 0.05)),
         "chat_template_kwargs": {"enable_thinking": False},
     }
     if tools:
@@ -102,8 +99,6 @@ async def chat(req: Request):
     msg = choices[0].get("message") or {}
     content = msg.get("content") or ""
     tool_calls = msg.get("tool_calls") or []
-
-    # Never surface hidden reasoning content to the app UI.
     result = {"role": "assistant", "content": content}
     if tool_calls:
         result["tool_calls"] = tool_calls
