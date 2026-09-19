@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>X-MIND</title>
+<style>
+:root{--bg:#05070c;--panel:#0b1019cc;--panel2:#0f1724;--line:#ffffff16;--text:#f4f7fb;--muted:#8392a8;--cyan:#7de7ff;--violet:#9d7cff;--green:#74f0b7;--red:#ff7f95}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#05070c;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:radial-gradient(700px 500px at 10% -10%,#0d425b55,transparent 60%),radial-gradient(700px 500px at 90% 0%,#40206b4d,transparent 60%),linear-gradient(180deg,#05070c,#080b12 45%,#05070c)}
+.shell{max-width:1500px;margin:auto;padding:18px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.brand{display:flex;align-items:center;gap:14px}.core{width:50px;height:50px;border-radius:50%;position:relative;background:radial-gradient(circle at 34% 28%,#fff,#91edff 10%,#4589ff 30%,#6948ce 56%,#0b1024 76%);box-shadow:0 0 40px #69dbff55,inset 0 0 20px #fff3}.core:before,.core:after{content:"";position:absolute;border:1px solid #8cdfff55;border-radius:50%;inset:-7px;animation:spin 8s linear infinite}.core:after{inset:-14px;border-color:#9b74ff33;animation-direction:reverse;animation-duration:12s}h1{font-size:24px;margin:0;letter-spacing:.08em}.sub{color:var(--muted);font-size:12px;margin-top:4px}.statusline{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.pill{font-size:11px;padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:#ffffff08;color:#b7c6d8}.pill.live{color:var(--green);border-color:#74f0b733}.pill.off{color:var(--red);border-color:#ff7f9533}.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,.7fr);gap:16px}.card{background:linear-gradient(145deg,#111827cc,#090d15d9);border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 70px #0007;backdrop-filter:blur(16px)}.chatcard{min-height:calc(100vh - 112px);display:flex;flex-direction:column;overflow:hidden}.chathead{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.chathead strong{font-size:13px;letter-spacing:.03em}.chathead span{font-size:11px;color:var(--muted)}.stream{padding:18px;display:flex;flex-direction:column;gap:15px;overflow:auto;flex:1;min-height:420px}.msg{max-width:86%;line-height:1.6;font-size:14px}.bubble{padding:13px 15px;border:1px solid var(--line);border-radius:18px;background:#0d1420}.msg.you{margin-left:auto}.msg.you .bubble{background:linear-gradient(135deg,#18385a,#2c2358)}.role{font-size:10px;letter-spacing:.12em;color:var(--muted);margin:0 0 6px 5px}.meta{font-size:10px;color:var(--muted);margin:6px 4px 0}.cites{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.cites a{font-size:10px;color:var(--cyan);text-decoration:none;border:1px solid #7de7ff2b;border-radius:999px;padding:5px 8px;background:#7de7ff0a}.composer{padding:14px;border-top:1px solid var(--line);background:#05070c66}.row{display:flex;gap:10px}textarea{flex:1;min-height:56px;max-height:180px;resize:vertical;background:#080d15;border:1px solid var(--line);border-radius:17px;color:var(--text);padding:14px;outline:none;font:inherit}textarea:focus{border-color:#7de7ff55;box-shadow:0 0 0 3px #7de7ff0b}button{border:0;border-radius:15px;padding:0 18px;font-weight:700;color:#071018;background:linear-gradient(135deg,var(--cyan),#a68cff);cursor:pointer}button:disabled{opacity:.45;cursor:default}.toolbar{display:flex;align-items:center;justify-content:space-between;margin-top:9px;color:var(--muted);font-size:11px}.toggle{display:flex;align-items:center;gap:6px}.side{display:flex;flex-direction:column;gap:16px}.section{padding:16px}.section h2{font-size:12px;letter-spacing:.09em;margin:0 0 12px;color:#cbd6e5}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stat,.item{border:1px solid var(--line);border-radius:15px;background:#080e18;padding:11px}.stat small,.item small{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}.stat b{font-size:14px}.item{font-size:12px;line-height:1.45;margin-bottom:8px}.item .tag{color:var(--cyan);font-size:9px;text-transform:uppercase;letter-spacing:.08em}.activity{display:flex;flex-direction:column;gap:8px}.event{padding:10px 12px;border-left:2px solid #7de7ff55;background:#ffffff05;border-radius:0 12px 12px 0;font-size:11px;color:#b9c4d3}.setup{padding:12px;border:1px solid #ff7f9533;background:#ff7f9509;border-radius:14px;font-size:11px;line-height:1.5;color:#ffc0cb}.hidden{display:none}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:920px){.layout{grid-template-columns:1fr}.chatcard{min-height:70vh}.statusline{justify-content:flex-start}.top{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.shell{padding:10px}.msg{max-width:96%}.row{flex-direction:column}button{height:48px}.grid2{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top">
+  <div class="brand"><div class="core"></div><div><h1>X-MIND</h1><div class="sub">Personal Cognitive System · Live Reasoning · Memory · Research</div></div></div>
+  <div class="statusline">
+    <span id="brainPill" class="pill">CHECKING CORE</span>
+    <span id="modelPill" class="pill">MODEL —</span>
+    <span class="pill">WEB RESEARCH</span>
+    <span class="pill">LONG-TERM MEMORY</span>
+  </div>
+</header>
+<div class="layout">
+<section class="card chatcard">
+  <div class="chathead"><div><strong>COMMAND CHANNEL</strong><br><span>Talk normally. X-MIND decides when to recall, reason, and research.</span></div><span id="latency">—</span></div>
+  <div id="stream" class="stream"><div class="msg"><div class="role">X-MIND</div><div class="bubble">Core interface online. Once the brain key is connected, responses come from the live reasoning model — not canned demo logic.</div></div></div>
+  <div class="composer">
+    <div class="row"><textarea id="q" placeholder="Tell X-MIND what you need…"></textarea><button id="send">SEND</button></div>
+    <div class="toolbar"><label class="toggle"><input id="web" type="checkbox" checked/> allow live web research</label><span>Enter to send · Shift+Enter for new line</span></div>
+  </div>
+</section>
+<aside class="side">
+  <section class="card section"><h2>CORE STATE</h2><div id="setup" class="setup hidden">Live brain credential is not connected yet. Add <b>OPENAI_API_KEY</b> to the Railway service variables. X-MIND will refuse to fake intelligence while it is disconnected.</div><div class="grid2" style="margin-top:10px"><div class="stat"><small>BRAIN</small><b id="brain">—</b></div><div class="stat"><small>MODEL</small><b id="model">—</b></div><div class="stat"><small>MEMORIES</small><b id="memCount">0</b></div><div class="stat"><small>RESEARCH</small><b id="research">AUTO</b></div></div></section>
+  <section class="card section"><h2>LAST COGNITIVE CYCLE</h2><div id="activity" class="activity"><div class="event">Waiting for your first request.</div></div></section>
+  <section class="card section"><h2>LONG-TERM MEMORY</h2><div id="memories"><div class="item"><small>EMPTY</small>No durable memories stored yet.</div></div></section>
+</aside>
+</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);const stream=$('stream'),q=$('q'),send=$('send');let session=localStorage.getItem('xmind_session');if(!session){session=crypto.randomUUID();localStorage.setItem('xmind_session',session)}
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function addMsg(role,text,citations=[]){const d=document.createElement('div');d.className='msg '+(role==='YOU'?'you':'');const links=(citations||[]).filter(x=>x.url).slice(0,6).map(x=>`<a target="_blank" rel="noopener" href="${esc(x.url)}">${esc(x.title||'source')}</a>`).join('');d.innerHTML=`<div class="role">${role}</div><div class="bubble">${esc(text).replace(/\n/g,'<br>')}${links?`<div class="cites">${links}</div>`:''}</div>`;stream.appendChild(d);stream.scrollTop=stream.scrollHeight}
+function events(d){const a=[];if((d.memories_used||[]).length)a.push(`Recalled ${d.memories_used.length} relevant long-term memories`);else a.push('No relevant long-term memory was needed');if((d.tools_used||[]).includes('web_search'))a.push('Used live web research for this answer');else a.push('Answered without web research');if((d.learned||[]).length)a.push(`Learned ${d.learned.length} durable facts/preferences from this turn`);else a.push('No new durable memory extracted');$('activity').innerHTML=a.map(x=>`<div class="event">${esc(x)}</div>`).join('')}
+async function loadStatus(){try{const s=await fetch('/status').then(r=>r.json());$('brain').textContent=s.brain_connected?'LIVE':'OFFLINE';$('model').textContent=s.model||'—';$('memCount').textContent=s.memory_count||0;$('modelPill').textContent='MODEL '+(s.model||'—');$('brainPill').textContent=s.brain_connected?'LIVE CORE':'CORE OFFLINE';$('brainPill').className='pill '+(s.brain_connected?'live':'off');$('setup').classList.toggle('hidden',!!s.brain_connected)}catch(e){}}
+async function loadMemories(){try{const m=await fetch('/memories?limit=12').then(r=>r.json());$('memories').innerHTML=m.length?m.map(x=>`<div class="item"><span class="tag">${esc(x.kind)}</span><br>${esc(x.content)}</div>`).join(''):`<div class="item"><small>EMPTY</small>No durable memories stored yet.</div>`;$('memCount').textContent=m.length}catch(e){}}
+async function ask(){const text=q.value.trim();if(!text)return;addMsg('YOU',text);q.value='';send.disabled=true;send.textContent='THINKING';const started=performance.now();try{const r=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,session_id:session,web:$('web').checked})});const d=await r.json();if(!r.ok)throw new Error(d.detail||'X-MIND request failed');addMsg('X-MIND',d.answer,d.citations);events(d);$('latency').textContent=(d.latency_ms||Math.round(performance.now()-started))+' ms · '+d.model;await loadStatus();await loadMemories()}catch(e){addMsg('SYSTEM',e.message);$('latency').textContent='ERROR'}finally{send.disabled=false;send.textContent='SEND';q.focus()}}
+send.onclick=ask;q.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask()}});loadStatus();loadMemories();setInterval(loadStatus,30000);
+</script>
+</body>
+</html>
