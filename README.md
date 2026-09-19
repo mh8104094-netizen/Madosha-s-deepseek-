@@ -1,5 +1,7 @@
-# X-MIND Railway deployment
+# X-MIND v0.1 — Railway Demo
 
-This branch is dedicated to X-MIND v0.1. It replaces the previous VELA preview branch only; main is untouched.
+This branch is dedicated to the X-MIND cognitive OS demo. Railpack installs the Python dependencies, `main.py` extracts the packaged X-MIND source, and the app starts with Uvicorn.
 
-Run via Dockerfile. The app serves the 3D interface at `/`, health at `/health`, and API docs at `/docs`.
+- `/` — 3D X-MIND interface
+- `/health` — health check
+- `/docs` — FastAPI API explorer
