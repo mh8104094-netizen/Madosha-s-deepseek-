@@ -1,12 +1,11 @@
 from __future__ import annotations
 
+import ctypes.util
 import os
 import pathlib
-import shutil
 import subprocess
 import sys
 import tarfile
-import time
 import urllib.request
 
 RUNTIME_DIR = pathlib.Path("/tmp/xmind-llama")
@@ -29,6 +28,27 @@ PORT = os.getenv("XMIND_LLAMA_PORT", "11435")
 
 def log(msg: str) -> None:
     print(f"[LLAMA-BOOT] {msg}", flush=True)
+
+
+def ensure_openmp() -> None:
+    if ctypes.util.find_library("gomp"):
+        log("GNU OpenMP runtime already available")
+        return
+    apt = pathlib.Path("/usr/bin/apt-get")
+    if not apt.exists():
+        raise RuntimeError("libgomp.so.1 is missing and apt-get is unavailable")
+    log("libgomp.so.1 missing; installing Debian libgomp1...")
+    env = os.environ.copy()
+    env["DEBIAN_FRONTEND"] = "noninteractive"
+    subprocess.run([str(apt), "update", "-qq"], check=True, env=env)
+    subprocess.run(
+        [str(apt), "install", "-y", "--no-install-recommends", "libgomp1"],
+        check=True,
+        env=env,
+    )
+    if not ctypes.util.find_library("gomp"):
+        raise RuntimeError("libgomp1 installation completed but libgomp is still unavailable")
+    log("libgomp1 installed successfully")
 
 
 def download(url: str, dest: pathlib.Path, label: str) -> None:
@@ -74,11 +94,12 @@ def main() -> None:
     RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
+    ensure_openmp()
     download(LLAMA_URL, ARCHIVE, "llama.cpp runtime")
     if not any(RUNTIME_DIR.iterdir()):
         log("extracting llama.cpp runtime...")
         with tarfile.open(ARCHIVE, "r:gz") as tf:
-            tf.extractall(RUNTIME_DIR)
+            tf.extractall(RUNTIME_DIR, filter="data")
         log("llama.cpp runtime extracted")
 
     download(MODEL_URL, MODEL, "Qwen3-0.6B Q4_0")
