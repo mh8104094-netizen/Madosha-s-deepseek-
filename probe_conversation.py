@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import time
 import urllib.request
+import uuid
 
 BASE = "http://127.0.0.1:80"
 
@@ -19,9 +20,10 @@ def post_chat(message: str, session_id: str | None = None):
         return json.loads(r.read().decode())
 
 
+session = "__probe_" + uuid.uuid4().hex
 for i in range(60):
     try:
-        a = post_chat("hello", "__probe_conversation_v4__")
+        a = post_chat("hello", session)
         print("[CONVO-PROBE] HELLO:", (a.get("answer") or "")[:300], flush=True)
         b = post_chat("ازيك؟", a.get("session_id"))
         print("[CONVO-PROBE] ARABIC:", (b.get("answer") or "")[:300], flush=True)
