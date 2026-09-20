@@ -1,45 +1,55 @@
-# AI Engineering Portfolio
+# Mohamed Hassan Shehata — AI-Native Builder
 
-> AI-native builder focused on automation, agentic workflows, retrieval systems, and reliable shipping.
+> I build practical AI systems, automation, agents, retrieval tools, and reliable backend workflows.
 
-I use AI as an engineering multiplier: to move faster from idea to working software while keeping the result inspectable, testable, and maintainable.
+I work **AI-first**: I use modern AI tools as an engineering multiplier to move quickly from an idea to working software, while keeping the result understandable, testable, and reviewable.
 
-## What I build
+## Engineering portfolio
 
-- AI-assisted workflow automation
-- Agent orchestration with explicit approvals and audit-friendly behavior
-- Retrieval / knowledge search systems
-- Evaluation harnesses for structured AI outputs
-- API and operations tooling
-
-## Featured projects
-
-| Project | What it demonstrates | Stack |
+| Project | What it demonstrates | Core ideas |
 |---|---|---|
-| [AI Workflow Orchestrator](projects/ai-workflow-orchestrator) | Dependency-aware workflow execution, retries, human approval gates, deterministic state | Python stdlib |
-| [Mini RAG Engine](projects/mini-rag-engine) | Chunking, TF-IDF retrieval, cosine ranking, explainable search results | Python stdlib |
-| [Agent Eval Harness](projects/agent-eval-harness) | Repeatable evaluation of structured agent outputs and tool-selection behavior | Python stdlib |
+| [AI Workflow Orchestrator](projects/ai-workflow-orchestrator) | Reliable multi-step automation | DAG execution, retries, approvals, state |
+| [Mini RAG Engine](projects/mini-rag-engine) | Retrieval without framework magic | Chunking, TF-IDF, cosine ranking |
+| [Agent Eval Harness](projects/agent-eval-harness) | Repeatable AI behavior testing | Assertions, structured outputs, tool checks |
+| [AI Ops Copilot](projects/ai-ops-copilot) | Safe AI-to-action workflows | Risk scoring, policy gates, approvals, audit log |
+| [Prompt Injection Firewall](projects/prompt-injection-firewall) | Defensive input screening | Normalization, heuristics, risk signals, explainability |
+| [Multi-Agent Router](projects/multi-agent-router) | Intelligent task routing | Capability matching, reliability, cost, latency |
+| [Webhook Reliability Gateway](projects/webhook-reliability-gateway) | Production-style event handling | HMAC verification, idempotency, retries, DLQ |
 
-## Engineering principles
+## What a reviewer can verify
 
-1. **AI is a tool, not a black box.** Generated code still needs understandable architecture and tests.
-2. **Make failure visible.** Workflows should fail explicitly and expose useful state.
-3. **Prefer simple systems first.** These demos intentionally avoid heavy frameworks so the core ideas are easy to inspect.
-4. **Design for humans in the loop.** Sensitive or irreversible actions should have explicit approval boundaries.
-5. **Evaluate behavior, not vibes.** Agent outputs should be checked against concrete requirements.
+- Every portfolio project contains runnable code.
+- Every project includes tests.
+- GitHub Actions runs the complete portfolio test suite.
+- The projects intentionally minimize dependencies so the important logic is easy to inspect.
+- Safety-sensitive actions use explicit policy and human-approval boundaries instead of blindly executing model output.
 
-## Run the portfolio tests
+## How I build with AI
+
+I do not hide the fact that AI is part of my workflow. I treat it the same way strong engineering teams treat compilers, frameworks, code search, and automation: as leverage.
+
+My focus is on the parts that still require engineering judgment:
+
+1. Breaking problems into clear systems and interfaces.
+2. Defining constraints, failure modes, and approval boundaries.
+3. Connecting AI to APIs, workflows, data, and business operations.
+4. Testing behavior instead of trusting a generated answer.
+5. Keeping implementations simple enough to understand and maintain.
+
+## Run everything
 
 ```bash
 for test in projects/*/test_*.py; do python "$test"; done
 ```
 
-Each project also includes its own README and runnable example.
+No API keys are required for the portfolio examples.
 
-## About this repository
+## Current interests
 
-This repository is now used as my public AI engineering portfolio workspace. Historical DeepSeek reference files remain in the git history / repository for attribution and are **not presented as my original work**. The portfolio projects under `projects/` are original demonstration projects created to show how I approach AI-enabled engineering.
+AI agents · workflow automation · RAG · API integrations · operations tooling · evaluation · guardrails · event-driven systems
 
 ---
 
-**Current focus:** building practical AI systems that connect models to real workflows, data, APIs, validation, and human decision points.
+### About this repository
+
+This repository is used as my public AI engineering portfolio workspace. Historical DeepSeek reference material from the repository's earlier state is **not presented as my original work**. The projects under `projects/` are portfolio implementations created to demonstrate my engineering approach.
