@@ -1,5 +1,6 @@
 import importlib.util
 from pathlib import Path
+import sys
 import unittest
 
 
@@ -7,6 +8,7 @@ MODULE_PATH = Path(__file__).with_name("eval_harness.py")
 spec = importlib.util.spec_from_file_location("eval_harness", MODULE_PATH)
 module = importlib.util.module_from_spec(spec)
 assert spec.loader is not None
+sys.modules[spec.name] = module
 spec.loader.exec_module(module)
 
 EvalCase = module.EvalCase

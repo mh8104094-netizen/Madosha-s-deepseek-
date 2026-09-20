@@ -31,7 +31,7 @@ I use AI as an engineering multiplier: to move faster from idea to working softw
 ## Run the portfolio tests
 
 ```bash
-python -m unittest discover -s projects -p 'test_*.py'
+for test in projects/*/test_*.py; do python "$test"; done
 ```
 
 Each project also includes its own README and runnable example.
